@@ -1,17 +1,108 @@
+import "react-native-gesture-handler";
+
 import React, { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { StatusBar } from "expo-status-bar";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  Button,
+  StyleSheet,
+} from "react-native";
 
-const Stack = createNativeStackNavigator();
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { auth } from "./config/firebaseConfig";
+
+const Drawer = createDrawerNavigator();
 
 function Home() {
+  const dummyData = [
+    {
+      id: "1",
+      title: "Expense 1",
+      description: "This is the description for the expense 1",
+    },
+    {
+      id: "2",
+      title: "Expense 2",
+      description: "This is the description for the expense 2",
+    },
+    {
+      id: "3",
+      title: "Expense 3",
+      description: "This is the description for the expense 3",
+    },
+    {
+      id: "4",
+      title: "Expense 4",
+      description: "This is the description for the expense 4",
+    },
+    {
+      id: "5",
+      title: "Expense 5",
+      description: "This is the description for the expense 5",
+    },
+    {
+      id: "6",
+      title: "Expense 6",
+      description: "This is the description for the expense 6",
+    },
+    {
+      id: "7",
+      title: "Expense 7",
+      description: "This is the description for the expense 7",
+    },
+    {
+      id: "8",
+      title: "Expense 8",
+      description: "This is the description for the expense 8",
+    },
+    {
+      id: "9",
+      title: "Expense 9",
+      description: "This is the description for the expense 9",
+    },
+    {
+      id: "10",
+      title: "Expense 10",
+      description: "This is the description for the expense 10",
+    },
+  ];
+
+  const Item = ({ title, description }) => {
+    return (
+      <>
+        <Text>{title}</Text>
+        <Text>{description}</Text>
+      </>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Text>This is home!</Text>
+      <FlatList
+        data={dummyData}
+        renderItem={({ item }) => (
+          <Item title={item.title} description={item.description} />
+        )}
+        keyExtractor={(item) => item.id}
+      />
+      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+function Profile() {
+  const { logOut } = useAuth();
+  return (
+    <View style={styles.container}>
+      <Text>This is profile!</Text>
+      <Button title="Logout" onPress={() => logOut(auth)} />
       <StatusBar style="auto" />
     </View>
   );
@@ -99,18 +190,19 @@ function Root() {
   const { user } = useAuth();
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Drawer.Navigator initialRouteName="Home">
         {user ? (
           <>
-            <Stack.Screen name="Home" component={Home} />
+            <Drawer.Screen name="Home" component={Home} />
+            <Drawer.Screen name="Profile" component={Profile} />
           </>
         ) : (
           <>
-            <Stack.Screen name="SignIn" component={SignIn} />
-            <Stack.Screen name="SignUp" component={SignUp} />
+            <Drawer.Screen name="SignIn" component={SignIn} />
+            <Drawer.Screen name="SignUp" component={SignUp} />
           </>
         )}
-      </Stack.Navigator>
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 }
