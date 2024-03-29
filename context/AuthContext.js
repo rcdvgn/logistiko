@@ -17,18 +17,19 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const createUser = async (uid, email) => {
-    // add new user to firestore
+    console.log("creating user with: " + uid, email);
     try {
       const userData = {
         email: email,
+        expenses: [],
       };
 
       const docRef = doc(collection(db, "users"), uid);
-
+      console.log("setting doc with user: " + userData);
       await setDoc(docRef, userData);
       console.log("Document written with ID: ", docRef.id);
 
-      return { data: userData, id: docRef.id };
+      return { data: userData, uid: uid };
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -77,12 +78,12 @@ export const AuthProvider = ({ children }) => {
       console.log(currUser);
       if (currUser) {
         const userRef = doc(db, "users", currUser.uid);
-        console.log(currUser.uid);
         const userDoc = await getDoc(userRef);
         if (userDoc.exists()) {
-          setUser(userDoc.data());
+          setUser({ data: userDoc.data(), uid: currUser.uid });
         } else {
-          setUser((toBeUser) => createUser(toBeUser.uid, toBeUser.email));
+          const newUser = await createUser(currUser.uid, currUser.email);
+          setUser(newUser);
         }
       } else {
         setUser(null);
