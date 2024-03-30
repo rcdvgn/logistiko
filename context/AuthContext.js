@@ -1,5 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { collection, setDoc, getDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  setDoc,
+  getDoc,
+  doc,
+  Timestamp,
+  onSnapshot,
+} from "firebase/firestore";
 import { auth, db } from "../config/firebaseConfig";
 
 import {
@@ -9,7 +16,6 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 
-// Create a context for authentication
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -22,12 +28,11 @@ export const AuthProvider = ({ children }) => {
       const userData = {
         email: email,
         expenses: [],
+        lastModified: Timestamp.now(),
       };
 
       const docRef = doc(collection(db, "users"), uid);
-      console.log("setting doc with user: " + userData);
       await setDoc(docRef, userData);
-      console.log("Document written with ID: ", docRef.id);
 
       return { data: userData, uid: uid };
     } catch (e) {
@@ -74,8 +79,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currUser) => {
-      console.log(currUser);
+    const unsubscribeAuth = onAuthStateChanged(auth, async (currUser) => {
+      // console.log(currUser);
       if (currUser) {
         const userRef = doc(db, "users", currUser.uid);
         const userDoc = await getDoc(userRef);
@@ -91,8 +96,23 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     });
 
-    return unsubscribe;
+    return unsubscribeAuth;
   }, []);
+
+  useEffect(() => {
+    if (user?.uid) {
+      const unsubscribeUser = onSnapshot(doc(db, "users", user.uid), (doc) => {
+        if (doc.exists()) {
+          setUser((currUser) => {
+            return { ...currUser, data: { ...doc.data() } };
+          });
+        }
+
+        setLoading(false);
+      });
+      return unsubscribeUser;
+    }
+  }, [user]);
 
   return (
     <AuthContext.Provider
