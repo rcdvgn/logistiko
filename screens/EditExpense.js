@@ -50,17 +50,17 @@ export default function EditExpense() {
   };
 
   useEffect(() => {
+    console.log("useEffect");
     for (let i = 0; i < user.data.expenses.length; i++) {
-      console.log(user.data.expenses[i]);
       if (user.data.expenses[i].uid === expenseId) {
         setAmount(user.data.expenses[i].amount);
         setDescription(user.data.expenses[i].description);
         setTargetExpense(i);
-
+        console.log("target: " + JSON.stringify(user.data.expenses[i]));
         break;
       }
     }
-  }, []);
+  }, [expenseId]);
 
   return (
     <View style={styles.container}>
