@@ -2,13 +2,13 @@ import styles from "../styles";
 
 import React, { useState } from "react";
 
-import { View, Text, TextInput, Button } from "react-native";
+import { View, Text, TextInput, Button, Pressable } from "react-native";
 import ExpenseForm from "../components/ExpenseForm";
 import { useNavigation } from "@react-navigation/native";
 
 import { useAuth } from "../context/AuthContext";
 
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
 
 import { v4 as uuidv4 } from "uuid";
@@ -33,12 +33,16 @@ export default function AddExpense() {
       uid: expenseId,
       description: description,
       amount: amount,
+      lastModified: Timestamp.now(),
     });
 
     const currUserRef = doc(db, "users", user.uid);
     await updateDoc(currUserRef, {
       expenses: updatedExpenses,
     });
+
+    setAmount("");
+    setDescription("");
 
     navigation.navigate("Home");
   };
@@ -51,6 +55,7 @@ export default function AddExpense() {
         amount={amount}
         setAmount={setAmount}
       />
+      <Button title="Cancelar" onPress={() => navigation.navigate("Home")} />
       <Button title="Adicionar" onPress={handleAddExpense} />
     </View>
   );

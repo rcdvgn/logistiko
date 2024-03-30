@@ -28,7 +28,6 @@ export const AuthProvider = ({ children }) => {
       const userData = {
         email: email,
         expenses: [],
-        lastModified: Timestamp.now(),
       };
 
       const docRef = doc(collection(db, "users"), uid);
