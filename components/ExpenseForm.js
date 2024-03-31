@@ -9,15 +9,21 @@ export default function ExpenseForm(props) {
     <>
       <TextInput
         style={styles.input}
+        placeholder="Descricao"
+        value={props.description}
+        onChangeText={props.setDescription}
+      />
+      <TextInput
+        style={styles.input}
         placeholder="Valor"
         value={props.amount}
         onChangeText={props.setAmount}
       />
       <TextInput
         style={styles.input}
-        placeholder="Descricao"
-        value={props.description}
-        onChangeText={props.setDescription}
+        placeholder="Categoria"
+        value={props.category}
+        onChangeText={props.setCategory}
       />
     </>
   );

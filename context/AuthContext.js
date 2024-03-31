@@ -28,6 +28,7 @@ export const AuthProvider = ({ children }) => {
       const userData = {
         email: email,
         expenses: [],
+        categories: ["Pensão", "Supermercado", "Blaze"],
       };
 
       const docRef = doc(collection(db, "users"), uid);

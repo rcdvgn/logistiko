@@ -8,6 +8,8 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useAuth } from "../context/AuthContext";
 
+import { addCategory } from "../utils/utils";
+
 import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
 
@@ -20,6 +22,7 @@ export default function AddExpense() {
 
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
 
   const handleAddExpense = async () => {
     const updatedExpenses = user.data.expenses;
@@ -33,8 +36,11 @@ export default function AddExpense() {
       uid: expenseId,
       description: description,
       amount: amount,
+      category: category,
       lastModified: Timestamp.now(),
     });
+
+    addCategory(user, category);
 
     const currUserRef = doc(db, "users", user.uid);
     await updateDoc(currUserRef, {
@@ -43,6 +49,7 @@ export default function AddExpense() {
 
     setAmount("");
     setDescription("");
+    setCategory("");
 
     navigation.navigate("Home");
   };
@@ -54,6 +61,8 @@ export default function AddExpense() {
         setDescription={setDescription}
         amount={amount}
         setAmount={setAmount}
+        category={category}
+        setCategory={setCategory}
       />
       <Button title="Cancelar" onPress={() => navigation.navigate("Home")} />
       <Button title="Adicionar" onPress={handleAddExpense} />

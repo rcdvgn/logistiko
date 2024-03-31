@@ -9,6 +9,7 @@ import Home from "./screens/Home";
 import Profile from "./screens/Profile";
 import AddExpense from "./screens/AddExpense";
 import EditExpense from "./screens/EditExpense";
+import Categories from "./screens/Categories";
 import SignUp from "./screens/SignUp";
 import SignIn from "./screens/SignIn";
 
@@ -25,8 +26,10 @@ function Root() {
         {user ? (
           <>
             <Drawer.Screen name="Home" component={Home} />
-            <Drawer.Screen name="Profile" component={Profile} />
+            <Drawer.Screen name="Categorias" component={Categories} />
             <Drawer.Screen name="Add Expense" component={AddExpense} />
+            <Drawer.Screen name="Profile" component={Profile} />
+
             <Drawer.Screen name="Edit Expense" component={EditExpense} />
           </>
         ) : (

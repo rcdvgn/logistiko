@@ -6,6 +6,8 @@ import { View, Text, TextInput, Button } from "react-native";
 
 import { useAuth } from "../context/AuthContext";
 
+import { addCategory } from "../utils/utils";
+
 import ExpenseForm from "../components/ExpenseForm";
 
 import { doc, updateDoc, Timestamp } from "firebase/firestore";
@@ -18,6 +20,8 @@ export default function EditExpense() {
 
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
+
   const [targetExpense, setTargetExpense] = useState();
 
   const route = useRoute();
@@ -35,7 +39,7 @@ export default function EditExpense() {
       lastModified: Timestamp.now(),
     };
 
-    // console.log(updatedExpenses);
+    addCategory(user, category);
 
     const currUserRef = doc(db, "users", user.uid);
     await updateDoc(currUserRef, {
@@ -44,6 +48,7 @@ export default function EditExpense() {
 
     setAmount("");
     setDescription("");
+    setCategory("");
     setTargetExpense(null);
 
     navigation.navigate("Home");
@@ -55,6 +60,7 @@ export default function EditExpense() {
       if (user.data.expenses[i].uid === expenseId) {
         setAmount(user.data.expenses[i].amount);
         setDescription(user.data.expenses[i].description);
+        setCategory(user.data.expenses[i].category);
         setTargetExpense(i);
         console.log("target: " + JSON.stringify(user.data.expenses[i]));
         break;
@@ -69,9 +75,11 @@ export default function EditExpense() {
         setDescription={setDescription}
         amount={amount}
         setAmount={setAmount}
+        category={category}
+        setCategory={setCategory}
       />
       <Button title="Cancelar" onPress={() => navigation.navigate("Home")} />
-      <Button title="Adicionar" onPress={handleEditExpense} />
+      <Button title="Editar" onPress={handleEditExpense} />
     </View>
   );
 }
