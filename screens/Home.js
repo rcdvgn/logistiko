@@ -37,12 +37,14 @@ export default function Home() {
   const Item = ({ amount, description, category, uid }) => {
     return (
       <View style={styles.expense}>
-        <View>
-          <Text>{description}</Text>
-          <Text>{category}</Text>
-          <Text>{amount}</Text>
+        <View style={styles.expenseInfoContainer}>
+          <View style={styles.expenseInfo}>
+            <Text style={styles.description}>{description}</Text>
+            <Text style={styles.category}>{category}</Text>
+          </View>
+          <Text style={styles.amount}>R${amount}</Text>
         </View>
-        <View>
+        <View style={styles.expenseActions}>
           <Button
             title="Editar"
             onPress={() =>

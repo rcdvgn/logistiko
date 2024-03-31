@@ -37,7 +37,7 @@ export default function SignUp() {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <View style={styles.authButtons}>
+      <View style={styles.buttons}>
         <Button
           title="Ja possuo conta"
           onPress={() => navigation.navigate("SignIn")}

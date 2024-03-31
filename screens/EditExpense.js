@@ -57,7 +57,7 @@ export default function EditExpense() {
 
       navigation.navigate("Home");
     } else {
-      Alert.alert(invalidExpense);
+      Alert.alert("Erro", invalidExpense, [{ text: "Ok" }]);
     }
   };
 
@@ -83,8 +83,10 @@ export default function EditExpense() {
         category={category}
         setCategory={setCategory}
       />
-      <Button title="Cancelar" onPress={() => navigation.navigate("Home")} />
-      <Button title="Editar" onPress={handleEditExpense} />
+      <View style={styles.buttons}>
+        <Button title="Cancelar" onPress={() => navigation.navigate("Home")} />
+        <Button title="Salvar Alteracoes" onPress={handleEditExpense} />
+      </View>
     </View>
   );
 }

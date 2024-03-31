@@ -37,7 +37,7 @@ export default function SignIn() {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <View style={styles.authButtons}>
+      <View style={styles.buttons}>
         <Button
           title="Nao possuo conta"
           onPress={() => navigation.navigate("SignUp")}

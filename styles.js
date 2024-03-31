@@ -18,7 +18,7 @@ module.exports = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 10,
   },
-  authButtons: {
+  buttons: {
     display: "flex",
     gap: 5,
     flexDirection: "row",
@@ -28,13 +28,47 @@ module.exports = StyleSheet.create({
   },
   expense: {
     display: "flex",
-    justifyContent: "space-between",
     padding: 15,
     backgroundColor: "white",
     borderRadius: 10,
-    flexDirection: "row",
+    flexDirection: "column",
     gap: 5,
     marginBottom: 5,
     elevation: 4,
+  },
+  expenseInfoContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  expenseInfo: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+  },
+  expenseActions: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 5,
+  },
+  amount: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#454545",
+  },
+  description: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  category: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#454545",
+    padding: 5,
+    borderRadius: 5,
+    backgroundColor: "#cccccc",
+    textAlign: "center",
   },
 });

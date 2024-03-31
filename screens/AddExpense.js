@@ -54,9 +54,7 @@ export default function AddExpense() {
 
       navigation.navigate("Home");
     } else {
-      Alert.alert("Simple Alert", "This is a simple alert message.", [
-        { text: invalidExpense },
-      ]);
+      Alert.alert("Erro", invalidExpense, [{ text: "Ok" }]);
     }
   };
 
@@ -70,8 +68,10 @@ export default function AddExpense() {
         category={category}
         setCategory={setCategory}
       />
-      <Button title="Cancelar" onPress={() => navigation.navigate("Home")} />
-      <Button title="Adicionar" onPress={handleAddExpense} />
+      <View style={styles.buttons}>
+        <Button title="Cancelar" onPress={() => navigation.navigate("Home")} />
+        <Button title="Adicionar" onPress={handleAddExpense} />
+      </View>
     </View>
   );
 }
