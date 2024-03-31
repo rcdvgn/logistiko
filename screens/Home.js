@@ -14,40 +14,60 @@ import { useAuth } from "../context/AuthContext";
 
 import React, { useState, useEffect } from "react";
 
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../config/firebaseConfig";
+
 export default function Home() {
   const { user } = useAuth();
 
   const [qry, setQry] = useState("");
-  const [filters, setFilters] = useState({
-    qry: qry,
-  });
 
   const navigation = useNavigation();
 
+  const deleteExpense = async (uid) => {
+    let updatedExpenses = [...user.data.expenses];
+
+    updatedExpenses = updatedExpenses.filter((expense) => expense.uid !== uid);
+
+    await updateDoc(doc(db, "users", user.uid), {
+      expenses: updatedExpenses,
+    });
+  };
+
   const Item = ({ amount, description, category, uid }) => {
     return (
-      <Pressable
-        style={styles.expense}
-        onPress={() => navigation.navigate("Edit Expense", { expenseId: uid })}
-      >
-        <Text>{description}</Text>
-        <Text>{category}</Text>
-        <Text>{amount}</Text>
-      </Pressable>
+      <View style={styles.expense}>
+        <View>
+          <Text>{description}</Text>
+          <Text>{category}</Text>
+          <Text>{amount}</Text>
+        </View>
+        <View>
+          <Button
+            title="Editar"
+            onPress={() =>
+              navigation.navigate("Edit Expense", { expenseId: uid })
+            }
+          />
+          <Button title="Excluir" onPress={() => deleteExpense(uid)} />
+        </View>
+      </View>
     );
   };
 
   const filter = (expenses) => {
-    let filteredExpenses = [...expenses];
+    if (expenses) {
+      let filteredExpenses = [...expenses];
 
-    return filteredExpenses.filter((expense) =>
-      expense.description.toLowerCase().includes(qry.toLowerCase())
-    );
+      return filteredExpenses.filter(
+        (expense) =>
+          expense.description.toLowerCase().includes(qry.toLowerCase()) ||
+          expense.category.toLowerCase().includes(qry.toLowerCase())
+      );
+    } else {
+      return [];
+    }
   };
-
-  // useEffect(() => {
-  //   const expenses
-  // }, [filters])
 
   return (
     <View style={styles.container}>
@@ -56,9 +76,6 @@ export default function Home() {
         placeholder="Procurar gasto"
         value={qry}
         onChangeText={setQry}
-        // keyboardType="email-address"
-        // autoCapitalize="none"
-        // autoCompleteType="email"
       />
       <Button
         title="Adicionar gasto"

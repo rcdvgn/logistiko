@@ -2,11 +2,12 @@ import styles from "../styles";
 
 import React, { useState, useEffect } from "react";
 
-import { View, Text, TextInput, Button } from "react-native";
+import { View, Text, TextInput, Button, Alert } from "react-native";
 
 import { useAuth } from "../context/AuthContext";
 
-import { addCategory } from "../utils/utils";
+import addCategory from "../utils/addCategory";
+import checkExpense from "../utils/checkExpense";
 
 import ExpenseForm from "../components/ExpenseForm";
 
@@ -30,39 +31,43 @@ export default function EditExpense() {
   const navigation = useNavigation();
 
   const handleEditExpense = async () => {
-    const updatedExpenses = user.data.expenses;
+    const invalidExpense = checkExpense(description, amount, category);
 
-    updatedExpenses[targetExpense] = {
-      ...user.data.expenses[targetExpense],
-      description: description,
-      amount: amount,
-      lastModified: Timestamp.now(),
-    };
+    if (!invalidExpense) {
+      const updatedExpenses = user.data.expenses;
 
-    addCategory(user, category);
+      updatedExpenses[targetExpense] = {
+        ...user.data.expenses[targetExpense],
+        description: description,
+        amount: amount,
+        lastModified: Timestamp.now(),
+      };
 
-    const currUserRef = doc(db, "users", user.uid);
-    await updateDoc(currUserRef, {
-      expenses: updatedExpenses,
-    });
+      addCategory(user, category);
 
-    setAmount("");
-    setDescription("");
-    setCategory("");
-    setTargetExpense(null);
+      const currUserRef = doc(db, "users", user.uid);
+      await updateDoc(currUserRef, {
+        expenses: updatedExpenses,
+      });
 
-    navigation.navigate("Home");
+      setAmount("");
+      setDescription("");
+      setCategory("");
+      setTargetExpense(null);
+
+      navigation.navigate("Home");
+    } else {
+      Alert.alert(invalidExpense);
+    }
   };
 
   useEffect(() => {
-    console.log("useEffect");
     for (let i = 0; i < user.data.expenses.length; i++) {
       if (user.data.expenses[i].uid === expenseId) {
         setAmount(user.data.expenses[i].amount);
         setDescription(user.data.expenses[i].description);
         setCategory(user.data.expenses[i].category);
         setTargetExpense(i);
-        console.log("target: " + JSON.stringify(user.data.expenses[i]));
         break;
       }
     }

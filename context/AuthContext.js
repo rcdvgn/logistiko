@@ -22,13 +22,15 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const fixedCategories = ["Mercado", "Blaze", "Contas"];
+
   const createUser = async (uid, email) => {
     console.log("creating user with: " + uid, email);
     try {
       const userData = {
         email: email,
         expenses: [],
-        categories: ["Pensão", "Supermercado", "Blaze"],
+        categories: fixedCategories,
       };
 
       const docRef = doc(collection(db, "users"), uid);
@@ -43,9 +45,6 @@ export const AuthProvider = ({ children }) => {
   const signUp = async (email, password) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log("Account created");
-        // const { uid, email } = userCredential.user;
-        // setUser(createUser(uid, email));
         setUser(userCredential.user);
       })
       .catch((error) => {
@@ -57,12 +56,9 @@ export const AuthProvider = ({ children }) => {
   const signIn = async (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log("Signed up");
-
         setUser(userCredential.user);
       })
       .catch((error) => {
-        // const errorCode = error.code;
         const errorMessage = error.message;
         console.error(errorMessage);
       });
@@ -80,7 +76,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async (currUser) => {
-      // console.log(currUser);
       if (currUser) {
         const userRef = doc(db, "users", currUser.uid);
         const userDoc = await getDoc(userRef);
@@ -121,6 +116,7 @@ export const AuthProvider = ({ children }) => {
         signIn,
         signUp,
         logOut,
+        fixedCategories,
       }}
     >
       {!loading && children}
@@ -128,5 +124,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Hook to use auth context
 export const useAuth = () => useContext(AuthContext);

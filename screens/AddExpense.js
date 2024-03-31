@@ -2,13 +2,14 @@ import styles from "../styles";
 
 import React, { useState } from "react";
 
-import { View, Text, TextInput, Button, Pressable } from "react-native";
+import { View, Text, TextInput, Button, Pressable, Alert } from "react-native";
 import ExpenseForm from "../components/ExpenseForm";
 import { useNavigation } from "@react-navigation/native";
 
 import { useAuth } from "../context/AuthContext";
 
-import { addCategory } from "../utils/utils";
+import addCategory from "../utils/addCategory";
+import checkExpense from "../utils/checkExpense";
 
 import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
@@ -25,33 +26,38 @@ export default function AddExpense() {
   const [category, setCategory] = useState("");
 
   const handleAddExpense = async () => {
-    const updatedExpenses = user.data.expenses;
+    const invalidExpense = checkExpense(description, amount, category);
 
-    let expenseId = uuidv4();
-    // do {
-    //   expenseId = uuidv4();
-    // } while (!updatedExpenses.some((obj) => obj.id === expenseId));
+    if (!invalidExpense) {
+      const updatedExpenses = [...user.data.expenses];
 
-    updatedExpenses.push({
-      uid: expenseId,
-      description: description,
-      amount: amount,
-      category: category,
-      lastModified: Timestamp.now(),
-    });
+      let expenseId = uuidv4();
 
-    addCategory(user, category);
+      updatedExpenses.push({
+        uid: expenseId,
+        description: description,
+        amount: amount,
+        category: category,
+        lastModified: Timestamp.now(),
+      });
 
-    const currUserRef = doc(db, "users", user.uid);
-    await updateDoc(currUserRef, {
-      expenses: updatedExpenses,
-    });
+      addCategory(user, category);
 
-    setAmount("");
-    setDescription("");
-    setCategory("");
+      const currUserRef = doc(db, "users", user.uid);
+      await updateDoc(currUserRef, {
+        expenses: updatedExpenses,
+      });
 
-    navigation.navigate("Home");
+      setAmount("");
+      setDescription("");
+      setCategory("");
+
+      navigation.navigate("Home");
+    } else {
+      Alert.alert("Simple Alert", "This is a simple alert message.", [
+        { text: invalidExpense },
+      ]);
+    }
   };
 
   return (

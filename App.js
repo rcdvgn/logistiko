@@ -29,8 +29,13 @@ function Root() {
             <Drawer.Screen name="Categorias" component={Categories} />
             <Drawer.Screen name="Add Expense" component={AddExpense} />
             <Drawer.Screen name="Profile" component={Profile} />
-
-            <Drawer.Screen name="Edit Expense" component={EditExpense} />
+            <Drawer.Screen
+              name="Edit Expense"
+              component={EditExpense}
+              options={{
+                drawerItemStyle: { height: 0 },
+              }}
+            />
           </>
         ) : (
           <>
